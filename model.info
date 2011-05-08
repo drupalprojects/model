@@ -1,0 +1,12 @@
+name = Model
+description = Provides entity functionality to serve as an example to model your own entities against.
+core = 7.x
+version = 1.x-dev
+
+dependencies[] = entity
+dependencies[] = views
+
+
+files[] = model.admin.inc
+files[] = model_type.admin.inc
+files[] = views/model.views.inc
