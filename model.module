@@ -44,6 +44,7 @@ function model_entity_info() {
       'path' => 'admin/content/models',
       'file' => 'model.admin.inc',
       'controller class' => 'ModelUIController',
+      'menu wildcard' => '%model',
     ),
   );
   // The entity that holds information about the entity types	  
@@ -77,8 +78,10 @@ function model_entity_info() {
 /**
  * Implements hook_entity_info_alter().
  *
- * We are adding the info about the model types via a hook since to avoid a recursion
+ * We are adding the info about the model types via a hook to avoid a recursion
  * issue as loading the model types requires the entity info as well.
+ *
+ * @todo This needs to be improved
  */
 function model_entity_info_alter(&$entity_info) {
   foreach (model_get_types() as $type => $info) {
@@ -147,9 +150,6 @@ function model_access($op, $model = NULL, $account = NULL) {
     return TRUE;
   }
   if (isset($model) && $type_name = $model->type) {
-    if ($op == 'delete') {
-      return TRUE;
-    }
     $op = ($op == 'view') ? 'view' : 'edit';
     if (user_access("$op any $type_name model", $account)) {
       return TRUE;
@@ -157,6 +157,7 @@ function model_access($op, $model = NULL, $account = NULL) {
   }
   return FALSE;
 }
+
 
 /**
  * Access callback for the entity API.
@@ -196,7 +197,8 @@ function model_type_load($type) {
 
 
 /**
- * Fetch a model object.
+ * Fetch a model object. Make sure that the wildcard you choose 
+ * in the model entity definition fits the function name here.
  *
  * @param $model_id
  *   Integer specifying the model id.
@@ -288,6 +290,36 @@ function model_type_delete(ModelType $type) {
 
 
 /**
+ * URI callback for models
+ */
+function model_uri(Model $model){
+  return array(
+    'path' => 'model/' . $model->model_id,
+  );
+}
+
+
+/**
+ * Menu title callback for showing individual entities
+ */
+function model_page_title(Model $model){
+  return $model->name;
+}
+
+
+/**
+ * Sets up content to show an individula model
+ * @todo - get rid of drupal_set_title();
+ */
+function model_page_view($model, $view_mode = 'full') {    
+  $controller = entity_get_controller('model');  
+  $content = $controller->view(array($model->model_id => $model));
+  drupal_set_title($model->name);
+  return $content;
+}
+
+
+/**
  * Implements hook_views_api().
  */
 function model_views_api() {
@@ -307,6 +339,16 @@ function model_theme() {
       'variables' => array('content' => array()),
       'file' => 'model.admin.inc',
     ),
+    'model' => array(
+      'render element' => 'elements',
+      'template' => 'model',
+    ),
+   'model_sample_data' => array(
+      'variables' => array('model_sample_data', 'model' => NULL),
+      'template' => 'model-sample-data',
+    ),
+
+
   );
 }  
 
@@ -336,6 +378,14 @@ class Model extends Entity {
   public function __construct($values = array()) {
     parent::__construct($values, 'model');
   }
+
+  protected function defaultLabel() {
+    return $this->name;
+  }
+
+  protected function defaultUri() {
+    return array('path' => 'model/' . $this->model_id);
+  }
   
   
 }
@@ -352,6 +402,7 @@ class ModelType extends Entity {
   public function __construct($values = array()) {
     parent::__construct($values, 'model_type');
   }
+  
 }
 
 
@@ -388,6 +439,18 @@ class ModelController extends EntityAPIController {
     
     $model = parent::create($values);
     return $model;
+  }
+  
+  /**
+   * Overriding the buldContent function to add entity specific fields
+   */
+  public function buildContent($entity, $view_mode = 'full', $langcode = NULL, $content = array()) {
+    $content = parent::buildContent($entity, $view_mode, $langcode, $content);
+    $content['model_sample_data'] =  array(
+      '#markup' => theme('model_sample_data', array('model_sample_data' => check_plain($entity->data['sample_data']), 'model' => $entity)),
+    );
+
+    return $content;
   }
   
 }

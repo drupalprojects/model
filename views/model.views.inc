@@ -1,8 +1,38 @@
 <?php
 
 /**
- * Views for the default models UI.
+ * @file
+ * Providing extra functionality for the Model UI via views.
  */
+
+
+/**
+ * Implements hook_views_data()
+ */
+function model_views_data_alter(&$data) { 
+  $data['model']['link_model'] = array(
+    'field' => array(
+      'title' => t('Link'),
+      'help' => t('Provide a link to the model.'),
+      'handler' => 'model_handler_link_field',
+    ),
+  );
+  $data['model']['edit_model'] = array(
+    'field' => array(
+      'title' => t('Edit Link'),
+      'help' => t('Provide a link to the edit form for the model.'),
+      'handler' => 'model_handler_edit_link_field',
+    ),
+  );
+  $data['model']['delete_model'] = array(
+    'field' => array(
+      'title' => t('Delete Link'),
+      'help' => t('Provide a link to delete the model.'),
+      'handler' => 'model_handler_delete_link_field',
+    ),
+  );
+  
+}
 
 
 /**
@@ -10,7 +40,7 @@
  */
 function model_views_default_views() {
   $views = array();
-  
+
   $view = new view;
   $view->name = 'models';
   $view->description = 'A list of all models';
@@ -61,31 +91,10 @@ function model_views_default_views() {
   $handler->display->display_options['empty']['area']['label'] = 'Empty ';
   $handler->display->display_options['empty']['area']['empty'] = FALSE;
   $handler->display->display_options['empty']['area']['content'] = 'No models have been created yet';
-  /* Field: Broken/missing handler */
-  $handler->display->display_options['fields']['name']['id'] = 'name';
-  $handler->display->display_options['fields']['name']['table'] = 'model';
-  $handler->display->display_options['fields']['name']['field'] = 'name';
-  $handler->display->display_options['fields']['name']['label'] = 'Name';
-  $handler->display->display_options['fields']['name']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['name']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['name']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['name']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['name']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['name']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['name']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['name']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['name']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['name']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['name']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['name']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['name']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['name']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['name']['empty_zero'] = 0;
-  /* Field: Broken/missing handler */
+  /* Field: Model: Model ID */
   $handler->display->display_options['fields']['model_id']['id'] = 'model_id';
   $handler->display->display_options['fields']['model_id']['table'] = 'model';
   $handler->display->display_options['fields']['model_id']['field'] = 'model_id';
-  $handler->display->display_options['fields']['model_id']['label'] = 'Model ID';
   $handler->display->display_options['fields']['model_id']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['model_id']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['model_id']['alter']['absolute'] = 0;
@@ -101,27 +110,85 @@ function model_views_default_views() {
   $handler->display->display_options['fields']['model_id']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['model_id']['hide_empty'] = 0;
   $handler->display->display_options['fields']['model_id']['empty_zero'] = 0;
-  /* Field: : field_test */
-  $handler->display->display_options['fields']['field_test']['id'] = 'field_test';
-  $handler->display->display_options['fields']['field_test']['table'] = 'field_data_field_test';
-  $handler->display->display_options['fields']['field_test']['field'] = 'field_test';
-  $handler->display->display_options['fields']['field_test']['label'] = 'Test';
-  $handler->display->display_options['fields']['field_test']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['field_test']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['field_test']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['field_test']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['field_test']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['field_test']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['field_test']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['field_test']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['field_test']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['field_test']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['field_test']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['field_test']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['field_test']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['field_test']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['field_test']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['field_test']['field_api_classes'] = 0;
+  /* Field: Model: Name */
+  $handler->display->display_options['fields']['name']['id'] = 'name';
+  $handler->display->display_options['fields']['name']['table'] = 'model';
+  $handler->display->display_options['fields']['name']['field'] = 'name';
+  $handler->display->display_options['fields']['name']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['name']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['name']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['name']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['name']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['name']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['name']['empty_zero'] = 0;
+  /* Field: Model: Link */
+  $handler->display->display_options['fields']['link_model']['id'] = 'link_model';
+  $handler->display->display_options['fields']['link_model']['table'] = 'model';
+  $handler->display->display_options['fields']['link_model']['field'] = 'link_model';
+  $handler->display->display_options['fields']['link_model']['label'] = 'View';
+  $handler->display->display_options['fields']['link_model']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['link_model']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['link_model']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['link_model']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['link_model']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['link_model']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['link_model']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['link_model']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['link_model']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['link_model']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['link_model']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['link_model']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['link_model']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['link_model']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['link_model']['empty_zero'] = 0;
+  /* Field: Model: Edit Link */
+  $handler->display->display_options['fields']['edit_model']['id'] = 'edit_model';
+  $handler->display->display_options['fields']['edit_model']['table'] = 'model';
+  $handler->display->display_options['fields']['edit_model']['field'] = 'edit_model';
+  $handler->display->display_options['fields']['edit_model']['label'] = 'Edit';
+  $handler->display->display_options['fields']['edit_model']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['edit_model']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['edit_model']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['edit_model']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['edit_model']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['edit_model']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['edit_model']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['edit_model']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['edit_model']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['edit_model']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['edit_model']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['edit_model']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['edit_model']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['edit_model']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['edit_model']['empty_zero'] = 0;
+  /* Field: Model: Delete Link */
+  $handler->display->display_options['fields']['delete_model']['id'] = 'delete_model';
+  $handler->display->display_options['fields']['delete_model']['table'] = 'model';
+  $handler->display->display_options['fields']['delete_model']['field'] = 'delete_model';
+  $handler->display->display_options['fields']['delete_model']['label'] = 'Delete';
+  $handler->display->display_options['fields']['delete_model']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['delete_model']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['delete_model']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['delete_model']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['delete_model']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['delete_model']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['delete_model']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['delete_model']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['delete_model']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['delete_model']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['delete_model']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['delete_model']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['delete_model']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['delete_model']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['delete_model']['empty_zero'] = 0;
   
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'models_admin_page');
@@ -146,11 +213,15 @@ function model_views_default_views() {
     t('Items per page'),
     t('- All -'),
     t('Offset'),
-    t('Empty'),
+    t('Empty '),
     t('No models have been created yet'),
-    t('Name'),
     t('Model ID'),
-    t('Test'),
+    t('.'),
+    t(','),
+    t('Name'),
+    t('View'),
+    t('Edit'),
+    t('Delete'),
     t('Page'),
   );
 
