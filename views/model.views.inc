@@ -31,7 +31,15 @@ function model_views_data_alter(&$data) {
       'handler' => 'model_handler_delete_link_field',
     ),
   );
-  
+  // This content of this field are decided based on the menu structure that
+  // follows models/model/%model_id/op
+  $data['model']['operations'] = array(
+    'field' => array(
+      'title' => t('Operations links'),
+      'help' => t('Display all operations available for this model.'),
+      'handler' => 'model_handler_model_operations_field',
+    ),
+  );
 }
 
 
