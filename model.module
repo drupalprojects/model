@@ -308,7 +308,7 @@ function model_page_title(Model $model){
 
 
 /**
- * Sets up content to show an individula model
+ * Sets up content to show an individual model
  * @todo - get rid of drupal_set_title();
  */
 function model_page_view($model, $view_mode = 'full') {    
