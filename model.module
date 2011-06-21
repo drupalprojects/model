@@ -91,7 +91,7 @@ function model_entity_info_alter(&$entity_info) {
         'path' => 'admin/structure/model_types/manage/%model_type',
         'real path' => 'admin/structure/model_types/manage/' . $type,
         'bundle argument' => 4,
-        'access arguments' => array('administer models'),
+        'access arguments' => array('administer model types'),
       ),
     );
   }
