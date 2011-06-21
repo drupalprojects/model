@@ -15,7 +15,7 @@ class ModelTypeUIController extends EntityDefaultUIController {
    */
   public function hook_menu() {
     $items = parent::hook_menu();
-    $items[$this->path]['description'] = 'Manage model entity types, including adding
+		$items[$this->path]['description'] = 'Manage model entity types, including adding
 		and removing fields and the display of fields.';
     return $items;
   }
@@ -83,9 +83,7 @@ function model_type_form($form, &$form_state, $model_type, $op = 'edit') {
  * Form API submit callback for the type form.
  */
 function model_type_form_submit(&$form, &$form_state) {
-  //$model_type = entity_ui_form_submit_build_entity($form, $form_state);
-  $model_type = entity_ui_controller('model_type')->entityFormSubmitBuildEntity($form, $form_state);
-  // Save and go back.
+  $model_type = entity_ui_form_submit_build_entity($form, $form_state);
   $model_type->save();
   $form_state['redirect'] = 'admin/structure/model_types';
 }

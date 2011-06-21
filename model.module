@@ -176,9 +176,9 @@ function model_type_access($op, $type = NULL, $account = NULL) {
  *   Depending whether $type isset, an array of model types or a single one.
  */
 function model_get_types($type_name = NULL) {
-    // entity_load will get the Entity controller for our model entity and call the load
-  // function of that object.
-  $types = entity_load('model_type', isset($type_name) ? array($type_name) : FALSE);
+  // entity_load will get the Entity controller for our model entity and call the load
+  // function of that object - we are loading entities by name here.
+  $types = entity_load_multiple_by_name('model_type', isset($type_name) ? array($type_name) : FALSE);
   return isset($type_name) ? reset($types) : $types;
 }
 
@@ -459,7 +459,7 @@ class ModelController extends EntityAPIController {
 /**
  * The Controller for Model entities
  */
-class ModelTypeController extends EntityAPIController {
+class ModelTypeController extends EntityAPIControllerExportable {
   public function __construct($entityType) {
     parent::__construct($entityType);
   }
