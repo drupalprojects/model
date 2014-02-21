@@ -210,7 +210,7 @@ function model_views_default_views() {
     t('Operations links'),
     t('Page'),
   );
-  $views[] = $view;
+  $views[$view->name] = $view;
   return $views;
 
 }
