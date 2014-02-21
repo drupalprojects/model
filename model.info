@@ -7,7 +7,7 @@ dependencies[] = views
 
 files[] = model.admin.inc
 files[] = model_type.admin.inc
-files[] = views/model.views.inc
+files[] = views/model.views_default.inc
 files[] = views/model_handler_link_field.inc
 files[] = views/model_handler_delete_link_field.inc
 files[] = views/model_handler_edit_link_field.inc
