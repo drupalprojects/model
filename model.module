@@ -268,16 +268,16 @@ function model_create($values = array()) {
  * @param $model
  *   The model object.
  */
-function model_save(Model $model) {
-  return $model->save();
+function model_save($model) {
+  return entity_save('model', $model);
 }
 
 
 /**
  * Saves a model type to the db.
  */
-function model_type_save(ModelType $type) {
-  $type->save();
+function model_type_save($type) {
+  return entity_save('model_type', $type);
 }
 
 
